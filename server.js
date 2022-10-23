@@ -1,72 +1,74 @@
-const express = require('express')
-const expressGraphQL = require('express-graphql').graphqlHTTP
-const app = express()
+const express = require("express");
+const expressGraphQL = require("express-graphql").graphqlHTTP;
+const app = express();
 
 //data
-const { books, authors } = require('./database')
+const { books, authors } = require("./database");
 
 //graphql
 const {
-    GraphQLSchema,
+  GraphQLSchema,
   GraphQLObjectType,
   GraphQLString,
   GraphQLList,
   GraphQLInt,
-  GraphQLNonNull
-} = require('graphql')
+  GraphQLNonNull,
+} = require("graphql");
 
 const BookType = new GraphQLObjectType({
-    name: 'Book',
-    description: 'Book wirtten by an author',
-    fields: () => ({
-        id: { type: new GraphQLNonNull(GraphQLInt) },
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: {type: new GraphQLNonNull(GraphQLInt)},
-        // creating author type which needs an resolve
-        author: {
-            type: AuthorType,
-            resolve: (book) => {
-                return authors.find(author => author.id === book.authorId)
-            }
-        }
-    
-    })
-})
+  name: "Book",
+  description: "Book wirtten by an author",
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+    authorId: { type: new GraphQLNonNull(GraphQLInt) },
+    // creating author type which needs an resolve
+    author: {
+      type: AuthorType,
+      resolve: (book) => {
+        return authors.find((author) => author.id === book.authorId);
+      },
+    },
+  }),
+});
 
 const AuthorType = new GraphQLObjectType({
-    name: 'Author',
-    description: 'Author of a book',
-    fields: () => ({
-        id: { type: new GraphQLNonNull(GraphQLInt) },
-        name: { type: new GraphQLNonNull(GraphQLString) }
-    })
-})
+  name: "Author",
+  description: "Author of a book",
+  fields: () => ({
+    id: { type: new GraphQLNonNull(GraphQLInt) },
+    name: { type: new GraphQLNonNull(GraphQLString) },
+  }),
+});
 
 const RootQueryType = new GraphQLObjectType({
-    name: 'Query',
-    description: 'Root query',
-    fields: () => ({
-        books: {
-            type: new GraphQLList(BookType),
-            description: 'List of All Books',
-            resolve: () => books
-        },
-        authors: {
-            type: new GraphQLList(AuthorType),
-            description: 'List of all authors',
-            resolve: () => authors
-        }
-    })
-})
+  name: "Query",
+  description: "Root query",
+  fields: () => ({
+    books: {
+      type: new GraphQLList(BookType),
+      description: "List of All Books",
+      resolve: () => books,
+    },
+    authors: {
+      type: new GraphQLList(AuthorType),
+      description: "List of all authors",
+      resolve: () => authors,
+    },
+  }),
+});
 
 const schema = new GraphQLSchema({
-    query: RootQueryType
-})
+  query: RootQueryType,
+});
 
-app.use('/graphql', expressGraphQL({
+app.use(
+  "/graphql",
+  expressGraphQL({
     schema: schema,
-    graphiql: true
-  }))
+    graphiql: true,
+  })
+);
 app.listen(5000, () => {
-    console.log('Server is working')
-})
+  console.log("Server is working");
+});
