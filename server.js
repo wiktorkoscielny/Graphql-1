@@ -21,7 +21,24 @@ const BookType = new GraphQLObjectType({
     fields: () => ({
         id: { type: new GraphQLNonNull(GraphQLInt) },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        authorId: {type: new GraphQLNonNull(GraphQLInt)}
+        authorId: {type: new GraphQLNonNull(GraphQLInt)},
+        // creating author type which needs an resolve
+        author: {
+            type: AuthorType,
+            resolve: (book) => {
+                return authors.find(author => author.id === book.authorId)
+            }
+        }
+    
+    })
+})
+
+const AuthorType = new GraphQLObjectType({
+    name: 'Author',
+    description: 'Author of a book',
+    fields: () => ({
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+        name: { type: new GraphQLNonNull(GraphQLString) }
     })
 })
 
