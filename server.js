@@ -83,41 +83,45 @@ const RootQueryType = new GraphQLObjectType({
 
 // mutatation type
 const RootMutationType = new GraphQLObjectType({
-    name: 'Mutatuin',
-    description: 'Root mutation',
-    fields: () => ({
-        addBook: {
-            type: BookType,
-            description: 'Add a new book',
-            args: {
-                name: { type: new GraphQLNonNull(GraphQLString)},
-                authorId: {type: new GraphQLNonNull(GraphQLInt)}
-            },
-            resolve: (parent, args) => {
-                const book = { id: books.length + 1, name: args.name, authorId: args.authorId }
-                books.push(book)
-                return book
-            }
-        },
-        addAuthor: {
-            type: AuthorType,
-            description: 'Add a new author',
-            args: {
-                name: {type: new GraphQLNonNull(GraphQLString)},
-                id: { type: new GraphQLNonNull(GraphQLInt) }
-            },
-            resolve: (parent, args) => {
-                const author = { id: authors.length + 1, name: args.name}
-                authors.push(author)
-                return author
-            }
-        }
-    })
-})
+  name: "Mutatuin",
+  description: "Root mutation",
+  fields: () => ({
+    addBook: {
+      type: BookType,
+      description: "Add a new book",
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        authorId: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        const book = {
+          id: books.length + 1,
+          name: args.name,
+          authorId: args.authorId,
+        };
+        books.push(book);
+        return book;
+      },
+    },
+    addAuthor: {
+      type: AuthorType,
+      description: "Add a new author",
+      args: {
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        id: { type: new GraphQLNonNull(GraphQLInt) },
+      },
+      resolve: (parent, args) => {
+        const author = { id: authors.length + 1, name: args.name };
+        authors.push(author);
+        return author;
+      },
+    },
+  }),
+});
 
 const schema = new GraphQLSchema({
   query: RootQueryType,
-  mutation: RootMutationType
+  mutation: RootMutationType,
 });
 
 app.use(
